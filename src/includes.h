@@ -6,4 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
-#include "curl/curl.h"
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>

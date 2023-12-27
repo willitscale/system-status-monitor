@@ -3,7 +3,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "disk.h"
-#include "curl.h"
+#include "udp.h"
 
 void sighandler(int);
 
@@ -11,14 +11,15 @@ int main(int argc, char **argv)
 {
   signal(SIGINT, sighandler);
 
-  if (3 != argc)
+  if (4 != argc)
   {
-    printf("Invalid arguments, expecting 2 and recieved %d. Format should be ./app URL TIMEOUT\n", argc - 1);
+    printf("Invalid arguments, expecting 3 and recieved %d. Format should be ./app HOST PORT INTERVAL\n", argc - 1);
     exit(1);
   }
 
-  char *url = argv[1];
-  int interval = atoi(argv[2]);
+  char *host = argv[1];
+  char *port = argv[2];
+  int interval = atoi(argv[3]);
 
   if (0 >= interval)
   {
@@ -28,7 +29,7 @@ int main(int argc, char **argv)
 
   for (;;)
   {
-    struct Data *requestData = malloc(sizeof(struct Data));
+    Data *requestData = malloc(sizeof(Data));
     FILE *stream = open_memstream(&requestData->data, &requestData->size);
 
     char *hostname = getHostname();
@@ -49,8 +50,13 @@ int main(int argc, char **argv)
     buildCpuStatusPostData(stream, cpuStatus);
 
     fclose(stream);
-    makePostRequest(url, requestData);
-    usleep(interval);
+
+    sendData(host, port, requestData);
+
+    free(requestData->data);
+    free(requestData);
+
+    sleep(interval);
   }
 
   return 0;
