@@ -26,7 +26,7 @@ Running the application requires you to provide three arguments; `HOST`, `PORT` 
 An example of this would be:
 
 ```bash
-./output/app localhost 55554 1000000
+./output/app localhost 55554 1
 ```
 
 ## Data
