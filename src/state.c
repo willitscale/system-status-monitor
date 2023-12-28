@@ -27,6 +27,8 @@ int main(int argc, char **argv)
     exit(1);
   }
 
+  int socketFileDescriptor = createSocket(host, port);
+
   for (;;)
   {
     Data *requestData = malloc(sizeof(Data));
@@ -51,7 +53,7 @@ int main(int argc, char **argv)
 
     fclose(stream);
 
-    sendData(host, port, requestData);
+    sendData(socketFileDescriptor, requestData);
 
     free(requestData->data);
     free(requestData);

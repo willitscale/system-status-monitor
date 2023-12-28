@@ -2,7 +2,7 @@
 
 #include "includes.h"
 
-#define BUF_SIZE 1024
+#define BUF_SIZE 2048
 
 typedef struct packet
 {
@@ -10,10 +10,10 @@ typedef struct packet
   size_t size;
 } Data;
 
-void sendData(char *, char *, Data *);
+int createSocket(char *, char *);
+int sendData(int, Data *);
 
-
-void sendData(char * host, char * port, Data * data)
+int createSocket(char *host, char *port)
 {
   struct addrinfo hints;
   struct addrinfo *result, *resultPointer;
@@ -38,17 +38,17 @@ void sendData(char * host, char * port, Data * data)
   for (resultPointer = result; resultPointer != NULL; resultPointer = resultPointer->ai_next)
   {
     socketFileDescriptor = socket(
-        resultPointer->ai_family, 
-        resultPointer->ai_socktype, 
-        resultPointer->ai_protocol
-    );
+        resultPointer->ai_family,
+        resultPointer->ai_socktype,
+        resultPointer->ai_protocol);
 
     if (socketFileDescriptor == -1)
     {
       continue;
     }
-    
-    if (connect(socketFileDescriptor, resultPointer->ai_addr, resultPointer->ai_addrlen) != -1) {
+
+    if (connect(socketFileDescriptor, resultPointer->ai_addr, resultPointer->ai_addrlen) != -1)
+    {
       break;
     }
 
@@ -63,15 +63,22 @@ void sendData(char * host, char * port, Data * data)
 
   freeaddrinfo(result);
 
-    if (data->size + 1 > BUF_SIZE)
-    {
-      fprintf(stderr, "Message is too long\n");
-      exit(EXIT_FAILURE);
-    }
+  return socketFileDescriptor;
+}
 
-    if (write(socketFileDescriptor, data->data, data->size) != data->size)
-    {
-      fprintf(stderr, "partial/failed write\n");
-      exit(EXIT_FAILURE);
-    }
+int sendData(int socketFileDescriptor, Data *data)
+{
+  if (BUF_SIZE < data->size + 1 )
+  {
+    fprintf(stderr, "Message is too long\n");
+    return EXIT_FAILURE;
+  }
+
+  if (write(socketFileDescriptor, data->data, data->size) != data->size)
+  {
+    fprintf(stderr, "Failed to write message\n");
+    return EXIT_FAILURE;
+  }
+
+  return EXIT_SUCCESS;
 }
