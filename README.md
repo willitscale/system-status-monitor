@@ -87,3 +87,44 @@ while(socket_select($read, $write, $except, NULL)) {
 ## Support
 
 Post it in the issues tab
+
+## Why did you write this in native C?
+
+I wanted something extremely light weight to minimise disruption of the system.
+From extensive testing this application uses ~2MB RSS and ~3MB VSZ. 
+
+pmap memory dump:
+```
+000055ebfadec000      4K r---- app
+000055ebfaded000      8K r-x-- app
+000055ebfadef000      4K r---- app
+000055ebfadf0000      4K r---- app
+000055ebfadf1000      4K rw--- app
+000055ebfb174000    132K rw---   [ anon ]
+00007f8bbab5d000     12K r---- libnss_files-2.31.so
+00007f8bbab60000     28K r-x-- libnss_files-2.31.so
+00007f8bbab67000      8K r---- libnss_files-2.31.so
+00007f8bbab69000      4K r---- libnss_files-2.31.so
+00007f8bbab6a000      4K rw--- libnss_files-2.31.so
+00007f8bbab6b000     24K rw---   [ anon ]
+00007f8bbab71000    136K r---- libc-2.31.so
+00007f8bbab93000   1504K r-x-- libc-2.31.so
+00007f8bbad0b000    312K r---- libc-2.31.so
+00007f8bbad59000     16K r---- libc-2.31.so
+00007f8bbad5d000      8K rw--- libc-2.31.so
+00007f8bbad5f000     24K rw---   [ anon ]
+00007f8bbad71000      4K r---- ld-2.31.so
+00007f8bbad72000    140K r-x-- ld-2.31.so
+00007f8bbad95000     32K r---- ld-2.31.so
+00007f8bbad9e000      4K r---- ld-2.31.so
+00007f8bbad9f000      4K rw--- ld-2.31.so
+00007f8bbada0000      4K rw---   [ anon ]
+00007ffce5842000    136K rw---   [ stack ]
+00007ffce5924000     16K r----   [ anon ]
+00007ffce5928000      8K r-x--   [ anon ]
+ total             2584K
+```
+
+Yes, I could have written it in another technology like PHP/Python, but I wanted it to be able to run natively without a runtime environment overhead.
+
+![Meme](https://raw.githubusercontent.com/willitscale/system-status-monitor/main/res/meme.jpg?raw=true)
