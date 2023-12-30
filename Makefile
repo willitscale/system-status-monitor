@@ -11,3 +11,6 @@ build-dev:
 
 run:
 	./output/app localhost 55554 1
+
+run-dev:
+	gdb --args ./output/app localhost 55554 1

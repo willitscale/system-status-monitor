@@ -10,7 +10,7 @@ This built using `gcc 9.4.0` and is compatible with`gnu17`, `gnu90` and `gnu89`,
 
 Building is done with a `Makefile` and to build you can simply run
 
-```bash
+```shell
 make clean build
 ```
 
@@ -25,7 +25,7 @@ Running the application requires you to provide three arguments; `HOST`, `PORT` 
 
 An example of this would be:
 
-```bash
+```shell
 ./output/app localhost 55554 1
 ```
 
@@ -88,10 +88,31 @@ while(socket_select($read, $write, $except, NULL)) {
 
 Post it in the issues tab
 
+## GDB
+
+If you would like to run this application in gdb there's two make commands that will enable this:
+
+```shell
+make clean build-dev run-dev
+```
+
+This will build the application binary with the debugging information so it's easier to step through with GDB e.g.
+
+```gdb
+(gdb) break main
+Breakpoint 1 at 0x247d: file src/state.c, line 11.
+(gdb) r
+Starting program: /system-status-monitor/output/app localhost 55554 1
+
+Breakpoint 1, main (argc=0, argv=0x555555554040) at src/state.c:11
+11      {
+(gdb)
+```
+
 ## Why did you write this in native C?
 
 I wanted something extremely light weight to minimise disruption of the system.
-From extensive testing this application uses ~2MB RSS and ~3MB VSZ. 
+From extensive testing this application uses ~2MB RSS and ~3MB VSZ.
 
 pmap memory dump:
 ```
