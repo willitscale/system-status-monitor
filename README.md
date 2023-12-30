@@ -146,6 +146,6 @@ pmap memory dump:
  total             2584K
 ```
 
-Yes, I could have written it in another technology like PHP/Python, but I wanted it to be able to run natively without a runtime environment overhead.
+Yes, I could have written it in another technology like PHP/Python, but I wanted it to be able to run it natively without a runtime environment's overhead.
 
 ![Meme](https://raw.githubusercontent.com/willitscale/system-status-monitor/main/res/meme.jpg?raw=true)
