@@ -21,7 +21,7 @@ LinkedList *execute(char *command)
   if (filePointer == NULL)
   {
     printf("Could not run command: %s\n", command);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   while (fgets(path, sizeof(path), filePointer) != NULL)
@@ -46,5 +46,4 @@ char *getHostname()
 void buildHostnamePostData(FILE *stream, char *hostname)
 {
   fprintf(stream, "hostname=%s", hostname);
-  free(hostname);
 }

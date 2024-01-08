@@ -80,5 +80,6 @@ int sendData(int socketFileDescriptor, Data *data)
     return EXIT_FAILURE;
   }
 
+  fprintf(stdout, "Message written\n");
   return EXIT_SUCCESS;
 }

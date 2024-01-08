@@ -5,16 +5,18 @@
 #include "disk.h"
 #include "udp.h"
 
+#define EXPECTED_NUMBER_OF_ARGUMENTS 4
+
 void sighandler(int);
 
 int main(int argc, char **argv)
 {
   signal(SIGINT, sighandler);
 
-  if (4 != argc)
+  if (EXPECTED_NUMBER_OF_ARGUMENTS != argc)
   {
     printf("Invalid arguments, expecting 3 and recieved %d. Format should be ./app HOST PORT INTERVAL\n", argc - 1);
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   char *host = argv[1];
@@ -23,18 +25,18 @@ int main(int argc, char **argv)
 
   if (0 >= interval)
   {
-    printf("Invalid interval\n");
-    exit(1);
+    printf("Invalid interval of %s\n", argv[3]);
+    exit(EXIT_FAILURE);
   }
 
   int socketFileDescriptor = createSocket(host, port);
+  char *hostname = getHostname();
 
   for (;;)
   {
     Data *requestData = malloc(sizeof(Data));
     FILE *stream = open_memstream(&requestData->data, &requestData->size);
 
-    char *hostname = getHostname();
     buildHostnamePostData(stream, hostname);
     fprintf(stream, "&");
 
@@ -60,12 +62,13 @@ int main(int argc, char **argv)
 
     sleep(interval);
   }
+  free(hostname);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 void sighandler(int signum)
 {
   printf("Caught signal %d, coming out...\n", signum);
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
