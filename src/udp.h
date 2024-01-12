@@ -74,12 +74,33 @@ int sendData(int socketFileDescriptor, Data *data)
     return EXIT_FAILURE;
   }
 
-  if (write(socketFileDescriptor, data->data, data->size) != data->size)
+  errno = 0;
+
+  int bytesWritten = write(socketFileDescriptor, data->data, data->size);
+
+  if (0 != errno) {
+    fprintf(stderr, "Error: %s (%d)\n", strerror(errno), errno);
+    return EXIT_FAILURE;
+  }
+
+  // write can return with -1 from time to time due to the outgoing network buffer being full.
+  // The following can be used to drain that buffer if the situation requires it, but I'll ommit it for now.
+  // if (-1 == bytesWritten) {
+  //   fprintf(stderr, "Error: EWOULDBLOCK(-1)\n");
+  //   struct pollfd  *pfds;
+  //   pfds = calloc(1, sizeof(struct pollfd));
+  //   pfds->fd = socketFileDescriptor;
+  //   pfds->events = POLLOUT;
+  //   poll(pfds, 1, -1);
+  //   free(pfds);
+  //   return EXIT_FAILURE;
+  // }
+
+  if (bytesWritten != data->size)
   {
     fprintf(stderr, "Failed to write message\n");
     return EXIT_FAILURE;
   }
 
-  fprintf(stdout, "Message written\n");
   return EXIT_SUCCESS;
 }
